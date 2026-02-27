@@ -1,0 +1,74 @@
+name: Roadmap Notes → roadmap.json
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "docs/roadmap-notes.md"
+      - "tools/roadmap-sync/notes-to-roadmap.js"
+      - "tools/roadmap-sync/package.json"
+      - ".github/workflows/roadmap-notes.yml"
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  build-roadmap-json:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install deps
+        working-directory: tools/roadmap-sync
+        run: npm ci || npm i
+
+      - name: Generate roadmap.json from notes
+        working-directory: tools/roadmap-sync
+        env:
+          NOTES_PATH: ../../docs/roadmap-notes.md
+          OUT_PATH: ../../roadmap.json
+        run: npm run notes:build
+
+      - name: Commit roadmap.json if changed
+        run: |
+          if git diff --quiet -- roadmap.json; then
+            echo "No changes to roadmap.json"
+            exit 0
+          fi
+
+          git config user.name "roadmap-bot"
+          git config user.email "roadmap-bot@users.noreply.github.com"
+          git add roadmap.json
+          git commit -m "chore: regenerate roadmap.json from roadmap-notes"
+          git push
+
+  sync-issues:
+    needs: build-roadmap-json
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install deps
+        working-directory: tools/roadmap-sync
+        run: npm ci || npm i
+
+      - name: Run sync
+        working-directory: tools/roadmap-sync
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ROADMAP_OWNER: ${{ github.repository_owner }}
+          ROADMAP_PATH: roadmap.json
+        run: npm run sync

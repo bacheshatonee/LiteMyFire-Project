@@ -1,0 +1,42 @@
+name: Roadmap Sync
+
+on:
+  workflow_dispatch:
+    inputs:
+      roadmap_path:
+        description: "Path to roadmap JSON"
+        required: true
+        default: "roadmap.json"
+  push:
+    paths:
+      - "roadmap.json"
+      - "tools/roadmap-sync/**"
+      - ".github/workflows/roadmap-sync.yml"
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install deps
+        working-directory: tools/roadmap-sync
+        run: npm ci || npm i
+
+      - name: Run sync
+        working-directory: tools/roadmap-sync
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ROADMAP_OWNER: ${{ github.repository_owner }}
+          ROADMAP_PATH: ${{ github.event.inputs.roadmap_path || 'roadmap.json' }}
+        run: node sync.js

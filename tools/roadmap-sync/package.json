@@ -1,0 +1,12 @@
+{
+  "name": "roadmap-sync",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Sync roadmap.json to GitHub Issues/Milestones/Labels",
+  "type": "module",
+  "license": "MIT",
+  "dependencies": {
+    "@actions/core": "^1.11.1",
+    "@octokit/rest": "^21.0.0"
+  }
+}

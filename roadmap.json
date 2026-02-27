@@ -7,16 +7,56 @@
     "project": "LiteMyFire-Project"
   },
   "labels": [
-    { "name": "type:feature", "color": "1d76db", "description": "Feature work" },
-    { "name": "type:bug", "color": "d73a4a", "description": "Bug fix" },
-    { "name": "type:chore", "color": "cfd3d7", "description": "Maintenance / housekeeping" },
-    { "name": "area:firmware", "color": "0052cc", "description": "ESP32 firmware" },
-    { "name": "area:android", "color": "0e8a16", "description": "Android app" },
-    { "name": "area:project", "color": "5319e7", "description": "Project/Docs/Meta" },
-    { "name": "safety:critical", "color": "b60205", "description": "Safety-critical work" },
-    { "name": "prio:P0", "color": "b60205", "description": "Must do now" },
-    { "name": "prio:P1", "color": "d93f0b", "description": "High priority" },
-    { "name": "prio:P2", "color": "fbca04", "description": "Medium priority" }
+    {
+      "name": "type:feature",
+      "color": "1d76db",
+      "description": "Feature work"
+    },
+    {
+      "name": "type:bug",
+      "color": "d73a4a",
+      "description": "Bug fix"
+    },
+    {
+      "name": "type:chore",
+      "color": "cfd3d7",
+      "description": "Maintenance / housekeeping"
+    },
+    {
+      "name": "area:firmware",
+      "color": "0052cc",
+      "description": "ESP32 firmware"
+    },
+    {
+      "name": "area:android",
+      "color": "0e8a16",
+      "description": "Android app"
+    },
+    {
+      "name": "area:project",
+      "color": "5319e7",
+      "description": "Project/Docs/Meta"
+    },
+    {
+      "name": "safety:critical",
+      "color": "b60205",
+      "description": "Safety-critical work"
+    },
+    {
+      "name": "prio:P0",
+      "color": "b60205",
+      "description": "Must do now"
+    },
+    {
+      "name": "prio:P1",
+      "color": "d93f0b",
+      "description": "High priority"
+    },
+    {
+      "name": "prio:P2",
+      "color": "fbca04",
+      "description": "Medium priority"
+    }
   ],
   "milestones": [
     {
@@ -27,23 +67,23 @@
       "issues": [
         {
           "title": "[v1.0.0] Implement explicit state machine + safe relay default",
-          "body": "Objective: deterministic control loop. Requirements:\n- Create SystemState enum\n- transitionTo() function\n- Relay OFF by default on boot/reset\n- ERROR_CRITICAL forces OFF\n\nAcceptance tests:\n- Power cycle -> relay OFF\n- Critical error -> relay OFF\n- No control logic directly in loop()\n",
-          "labels": ["type:feature", "area:firmware", "safety:critical", "prio:P0"]
+          "labels": [
+            "type:feature",
+            "area:firmware",
+            "safety:critical",
+            "prio:P0"
+          ],
+          "body": "Objective: deterministic control loop.\nRequirements:\n- Create SystemState enum\n- transitionTo() function\n- Relay OFF by default on boot/reset\n- ERROR_CRITICAL forces OFF\nAcceptance tests:\n- Power cycle -> relay OFF\n- Critical error -> relay OFF\n- No control logic directly in loop()"
         },
         {
           "title": "[v1.0.0] Add hardware watchdog + feed in main loop",
-          "body": "Objective: prevent hang leaving output ON.\n\nRequirements:\n- Enable ESP32 task watchdog\n- Feed watchdog at safe frequency\n- If watchdog triggers, relay defaults OFF on reboot\n\nAcceptance tests:\n- Simulated hang -> reset occurs\n- After reset, relay OFF\n",
-          "labels": ["type:feature", "area:firmware", "safety:critical", "prio:P0"]
-        },
-        {
-          "title": "[v1.0.0] Add NVS persistence for target/mode/loglevel/deviceName",
-          "body": "Objective: power-cycle safe behavior.\n\nStore:\n- targetTemp\n- smartMode\n- logLevel\n- deviceName\n\nAcceptance tests:\n- Set values\n- Reboot\n- Values persist\n",
-          "labels": ["type:feature", "area:firmware", "prio:P1"]
-        },
-        {
-          "title": "[v1.0.0] Add /info endpoint (version, uptime, heap, MAC/deviceId)",
-          "body": "Objective: fleet diagnostics.\n\nReturn JSON including:\n- firmwareVersion\n- buildDate\n- uptime\n- heapFree\n- deviceId\n\nAcceptance tests:\n- GET /info returns valid JSON\n",
-          "labels": ["type:feature", "area:firmware", "prio:P1"]
+          "labels": [
+            "type:feature",
+            "area:firmware",
+            "safety:critical",
+            "prio:P0"
+          ],
+          "body": "Objective: prevent hang leaving output ON.\nRequirements:\n- Enable ESP32 task watchdog\n- Feed watchdog at safe frequency\n- If watchdog triggers, relay defaults OFF on reboot\nAcceptance tests:\n- Simulated hang -> reset occurs\n- After reset, relay OFF"
         }
       ]
     },
@@ -55,8 +95,12 @@
       "issues": [
         {
           "title": "[v1.0.0] Add device health banner + last-seen timer",
-          "body": "Objective: no silent failure.\n\nRequirements:\n- Track last successful poll timestamp\n- If >10s show 'Device Offline'\n- If repeated failures -> show critical action\n\nAcceptance tests:\n- Disable WiFi on ESP32 -> banner appears\n- Restore -> banner clears\n",
-          "labels": ["type:feature", "area:android", "prio:P1"]
+          "labels": [
+            "type:feature",
+            "area:android",
+            "prio:P1"
+          ],
+          "body": "Objective: no silent failure.\nRequirements:\n- Track last successful poll timestamp\n- If >10s show 'Device Offline'\n- If repeated failures -> show critical action\nAcceptance tests:\n- Disable WiFi on ESP32 -> banner appears\n- Restore -> banner clears"
         }
       ]
     }
